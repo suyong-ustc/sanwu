@@ -914,7 +914,7 @@ bool RegisterSubpixelDisplacementWithBoundaryCheck(const arma::mat& refer_image,
 
 				// 变形子区灰度
 				const mat deform_subset_intensities = deform_image_interpolator->Values(deform_x, deform_y);
-
+				
 				// 变形子区灰度向量化
 				vec nd;
 				const double gg = NormalizeVectorize(deform_subset_intensities, weight, nd);
@@ -1096,7 +1096,7 @@ double NormalizeVectorize(const mat& m, const mat& w, vec& v)
 	a = a % w;
 
 	// 归一化
-	const double vv = norm(a, 2);
+	const double vv = sqrt(accu(a % a));
 	a = a / vv;
 
 	// 向量化

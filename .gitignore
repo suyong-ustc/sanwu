@@ -361,3 +361,8 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/images/Polynomial/a-4n3_1.bmp
+/images/Polynomial/a-4n3_0.bmp
+/images/Polynomial/a-3n2_1.bmp
+/images/Polynomial/a-3n2_0.bmp
+/SanWu/test.m

@@ -5,6 +5,7 @@
 #include <armadillo>
 #include "DIC/DICAlgorithm.h"
 #include "DIC/DICParameters.h"
+#include "Test.h"
 using namespace arma;
 
 
@@ -422,17 +423,17 @@ void AnalyzeBoundary()
 	SetDICParameters(dic_parameters);
 
 	// 设置子区大小
-	const int subset_size = 19;
+	const int subset_size = 29;
 	dic_parameters.set_subset_size(subset_size);
 
 	// 设置形函数阶数
-	const int shape_function_order = 1;
+	const int shape_function_order = 2;
 	dic_parameters.set_shape_function_order(shape_function_order);
 
 	// 设置感兴趣区域
 	const int half_subset_size = (subset_size - 1) / 2;
-	const int x0 = 250;
-	dic_parameters.set_roi(x0 - 20, x0 + 20, 50, 450);
+	const int x0 = 150;
+	dic_parameters.set_roi(x0 - half_subset_size, x0 + half_subset_size, 50, 450);
 
 
 	/********************************************/
@@ -441,8 +442,8 @@ void AnalyzeBoundary()
 
 	// 读取图像
 	const std::string prefix = std::string("..\\images\\Polynomial\\");
-	const std::string refer_image_path = prefix + "a-3n3_0.bmp";
-	const std::string deform_image_path = prefix + "a-3n3_1.bmp";
+	const std::string refer_image_path = prefix + "a-4n3_0.bmp";
+	const std::string deform_image_path = prefix + "a-4n3_1.bmp";
 
 	mat refer_image;
 	mat deform_image;
@@ -451,7 +452,7 @@ void AnalyzeBoundary()
 
 
 	/********************************************/
-	/*********         读取图像            *******/
+	/*********         相关计算            *******/
 	/********************************************/
 
 	// 网格点
@@ -462,11 +463,15 @@ void AnalyzeBoundary()
 	// 初始化计算结果
 	DICOutput* dic_output = new DICOutput(grid_x, grid_y, ParameterTotalNumber(dic_parameters.shape_function_order()));
 
-	// 估计初值
-	EstimateInitialDisplacement(refer_image, deform_image, dic_parameters, dic_output);
+	// 设定迭代初值
+	const mat u = 0.0001 * pow(grid_x - 150, 3);
+	const mat v = zeros(grid_x.n_rows, grid_x.n_cols);
+
+	dic_output->set_u(u);
+	dic_output->set_v(v);
 
 	// 相关计算
-	RegisterSubpixelDisplacement(refer_image, deform_image, dic_parameters, dic_output);
+	RegisterSubpixelDisplacementWithBoundaryCheck(refer_image, deform_image, dic_parameters, dic_output);
 
 	// 输出结果
 	//std::string output_prefix = std::string("..\\results\\Sinusoidal\\T") + std::to_string(period)
@@ -487,4 +492,5 @@ void AnalyzeBoundary()
 int main()
 {
 	AnalyzeBoundary();
+	//TestNormalizeVectorize();
 }

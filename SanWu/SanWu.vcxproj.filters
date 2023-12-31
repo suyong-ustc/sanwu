@@ -59,6 +59,9 @@
     <ClCompile Include="Interpolation\Interpolator.cpp">
       <Filter>Source Files\Interpolation</Filter>
     </ClCompile>
+    <ClCompile Include="Test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Interpolation\BisepticBSplineInterpolator.h">
@@ -81,6 +84,9 @@
     </ClInclude>
     <ClInclude Include="Interpolation\Interpolator.h">
       <Filter>Header Files\Interpolation</Filter>
+    </ClInclude>
+    <ClInclude Include="Test.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

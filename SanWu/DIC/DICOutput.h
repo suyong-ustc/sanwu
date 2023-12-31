@@ -90,6 +90,7 @@ public:
 			write_grid_coordinate(prefix + std::string("_x.csv"), prefix + std::string("_y.csv"), arma::csv_ascii) &&
 			write_displacement_field(prefix + std::string("_u.csv"), prefix + std::string("_v.csv"), arma::csv_ascii) &&
 			write_iteration_times(prefix + std::string("_iteration_times.csv"), arma::csv_ascii) &&
+			write_valid_sign(prefix + std::string("_valid_sign.csv"), arma::csv_ascii) &&
 			write_zncc(prefix + std::string("_zncc.csv"), arma::csv_ascii);
 	}
 
