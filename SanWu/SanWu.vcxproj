@@ -75,6 +75,7 @@
     <ClCompile>
       <AdditionalIncludeDirectories>$(SolutionDir)armadillo\include;$(SolutionDir)opencv\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OpenMPSupport>true</OpenMPSupport>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
