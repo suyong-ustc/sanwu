@@ -136,8 +136,8 @@ void AnalyzeTransferFunction(const int& period, const int& subset_size, const in
 	// 初始化计算结果
 	DICOutput* dic_output = new DICOutput(grid_x, grid_y, ParameterTotalNumber(dic_parameters.shape_function_order()));
 
-	// 估计初值
-	EstimateInitialDisplacement(refer_image, deform_image, dic_parameters, dic_output);
+	// 设置迭代初值
+	dic_output->set_u(sin(2.0 * datum::pi * grid_x / period));
 
 	// 相关计算
 	RegisterSubpixelDisplacement(refer_image, deform_image, dic_parameters, dic_output);
@@ -150,8 +150,8 @@ void AnalyzeTransferFunction(const int& period, const int& subset_size, const in
 	// 输出路径
 	std::string output_prefix = 
 		std::string("..\\results\\Sinusoidal\\T") + std::to_string(period) + 
-		"M" + std::to_string(dic_parameters.subset_size()) + "_"
-		"U" + std::to_string(empty) + "_" + 
+		"M" + std::to_string(dic_parameters.subset_size()) + 
+		"U" + std::to_string(empty) + 
 		"N" + std::to_string(dic_parameters.shape_function_order());
 	dic_output->write(output_prefix);
 
@@ -187,7 +187,7 @@ void AnalyzeTransferFunctions()
 
 	if (mode == 0)
 	{
-		const int period = 40;
+		const int period = 50;
 		const int subset_size = 29;
 		const ivec shape_function_order = regspace<ivec>(0, 1, 2);
 
@@ -201,8 +201,8 @@ void AnalyzeTransferFunctions()
 	}
 	else if (mode == 1)
 	{
-		const int period = 40;
-		const ivec subset_size = regspace<ivec>(19, 10, 49);
+		const int period = 50;
+		const ivec subset_size = regspace<ivec>(49, -10, 19);
 		const int shape_function_order = 1;
 
 		para.zeros(subset_size.n_elem, 3);
@@ -215,7 +215,7 @@ void AnalyzeTransferFunctions()
 	}
 	else if (mode == 2)
 	{
-		const ivec period = regspace<ivec>(20, 10, 80);
+		const ivec period = regspace<ivec>(100, -10, 20);
 		const int subset_size = 29;
 		const int shape_function_order = 1;
 

@@ -261,29 +261,29 @@ bool EstimateInitialDisplacement(const mat& refer_image, const mat& deform_image
 	mat v(x.n_rows, x.n_cols, fill::zeros);
 
 	// ¸³³õÖµ
-	//bool is_harmonic = true;
+	bool is_harmonic = true;
 
-	//if (is_harmonic)
-	//{
-	//	double a = 1;
-	//	double T = 40;
-	//	double b = 0;
+	if (is_harmonic)
+	{
+		double a = 1;
+		double T = 40;
+		double b = 0;
 
-	//	u = a * sin(2 * datum::pi * x / T);
-	//	//u = a * sin(2 * datum::pi * x / T) % sin(2 * datum::pi * y / T);
-	//}
-	//else
-	//{
-	//	double a = 1;
-	//	double x0 = 250;
-	//	double c = 40;
+		u = a * sin(2 * datum::pi * x / T);
+		//u = a * sin(2 * datum::pi * x / T) % sin(2 * datum::pi * y / T);
+	}
+	else
+	{
+		double a = 1;
+		double x0 = 250;
+		double c = 40;
 
-	//	mat t = (x - x0) / c;
-	//	u = a * exp(-t % t);
-	//}
+		mat t = (x - x0) / c;
+		u = a * exp(-t % t);
+	}
 
-	//const double a = 0.001;
-	//u = a * pow(x - 250, 3);
+	const double a = 0.001;
+	u = a * pow(x - 250, 3);
 
 
 	dic_output->set_u(u);
