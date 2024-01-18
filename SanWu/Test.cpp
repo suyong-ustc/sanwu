@@ -172,7 +172,7 @@ void AnalyzeTransferFunctions()
 	// 0: 分析不同形函数影响；
 	// 1：分析不同子区大小影响；
 	// 2：分析不同周期影响
-	int mode = 0;
+	int mode = 2;
 
 	if (mode == 0)
 		std::cout << "Analyze sinusoidal displacement fields corresponding to different shape function orders ..." << std::endl;
@@ -202,8 +202,8 @@ void AnalyzeTransferFunctions()
 	else if (mode == 1)
 	{
 		const int period = 50;
-		const ivec subset_size = regspace<ivec>(49, -10, 19);
-		const int shape_function_order = 1;
+		const ivec subset_size = regspace<ivec>(19, -10, 19);
+		const int shape_function_order = 2;
 
 		para.zeros(subset_size.n_elem, 3);
 		for (int i = 0; i < subset_size.n_elem; ++i)
@@ -215,9 +215,9 @@ void AnalyzeTransferFunctions()
 	}
 	else if (mode == 2)
 	{
-		const ivec period = regspace<ivec>(100, -10, 20);
+		const ivec period = regspace<ivec>(60, -10, 60);
 		const int subset_size = 29;
-		const int shape_function_order = 1;
+		const int shape_function_order = 2;
 
 		para.zeros(period.n_elem, 3);
 		for (int i = 0; i < period.n_elem; ++i)
