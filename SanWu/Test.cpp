@@ -251,8 +251,12 @@ void AnalyzeTransferFunctions()
 
 
 
-void AnalyzeBoundary()
+void AnalyzeBoundary(const int& polynomial_order, const int& subset_size, const int& shape_function_order)
 {
+	std::cout << "Start analyze polynomial order: " << polynomial_order << ";\t"
+		<< "subset size: " << subset_size << ";\t"
+		<< "shape function order: " << shape_function_order << std::endl;
+
 	/********************************************/
 	/*********         设置参数            *******/
 	/********************************************/
@@ -262,17 +266,22 @@ void AnalyzeBoundary()
 	SetDICParameters(dic_parameters);
 
 	// 设置子区大小
-	const int subset_size = 29;
 	dic_parameters.set_subset_size(subset_size);
 
 	// 设置形函数阶数
-	const int shape_function_order = 2;
 	dic_parameters.set_shape_function_order(shape_function_order);
 
 	// 设置感兴趣区域
-	const int half_subset_size = (subset_size - 1) / 2;
-	const int x0 = 150;
-	dic_parameters.set_roi(x0 - half_subset_size, x0 + half_subset_size, 50, 450);
+	if (polynomial_order != 4) {
+		const int half_subset_size = (subset_size - 1) / 2;
+		const int x0 = 150;
+		dic_parameters.set_roi(x0 - half_subset_size, x0 + half_subset_size, 50, 450);
+	}
+	else if (polynomial_order == 4) {
+		const int half_subset_size = (subset_size - 1) / 2;
+		const int x0 = 40;
+		dic_parameters.set_roi(x0 - half_subset_size, x0 + half_subset_size, 50, 450);
+	}
 
 
 	/********************************************/
@@ -281,8 +290,24 @@ void AnalyzeBoundary()
 
 	// 读取图像
 	const std::string prefix = std::string("..\\images\\Polynomial\\");
-	const std::string refer_image_path = prefix + "a-4n3_0.bmp";
-	const std::string deform_image_path = prefix + "a-4n3_1.bmp";
+	std::string refer_image_path;
+	std::string deform_image_path;
+	if (polynomial_order == 2) {
+		refer_image_path = prefix + "A-3L2_0.bmp";
+		deform_image_path = prefix + "A-3L2_1.bmp";
+	}
+	else if (polynomial_order == 3) {
+		refer_image_path = prefix + "A-4L3_0.bmp";
+		deform_image_path = prefix + "A-4L3_1.bmp";
+	}
+	else if (polynomial_order == 4) {
+		refer_image_path = prefix + "A-6L4_0.bmp";
+		deform_image_path = prefix + "A-6L4_1.bmp";
+	}
+	else if (polynomial_order == 5) {
+		refer_image_path = prefix + "A-7L5_0.bmp";
+		deform_image_path = prefix + "A-7L5_1.bmp";
+	}
 
 	mat refer_image;
 	mat deform_image;
@@ -303,8 +328,16 @@ void AnalyzeBoundary()
 	DICOutput* dic_output = new DICOutput(grid_x, grid_y, ParameterTotalNumber(dic_parameters.shape_function_order()));
 
 	// 设定迭代初值
-	const mat u = 0.0001 * pow(grid_x - 150, 3);
 	const mat v = zeros(grid_x.n_rows, grid_x.n_cols);
+	mat u;
+	if (polynomial_order == 2)
+		u = 1e-3 * pow(grid_x - 150, 2);
+	else if (polynomial_order == 3)
+		u = 1e-4 * pow(grid_x - 150, 3);
+	else if (polynomial_order == 4)
+		u = 1e-6 * pow(grid_x - 40, 4);
+	else if (polynomial_order == 5)
+		u = 1e-7 * pow(grid_x - 150, 5);
 
 	dic_output->set_u(u);
 	dic_output->set_v(v);
@@ -313,15 +346,80 @@ void AnalyzeBoundary()
 	RegisterSubpixelDisplacementWithBoundaryCheck(refer_image, deform_image, dic_parameters, dic_output);
 
 	// 输出结果
-	//std::string output_prefix = std::string("..\\results\\Sinusoidal\\T") + std::to_string(period)
-	//	+ "N" + std::to_string(dic_parameters.shape_function_order())
-	//	+ "D" + std::to_string(nul)
-	//	+ "M" + std::to_string(dic_parameters.subset_size()) + "_";
-	dic_output->write("n3");
+	std::string output_prefix =
+		std::string("..\\results\\Polynomial\\L") + std::to_string(polynomial_order)
+		+ "N" + std::to_string(shape_function_order)
+		+ "M" + std::to_string(subset_size);
+
+	dic_output->write(output_prefix);
 
 	// 释放内存
 	delete dic_output;
 
 	std::cout << "\nJob Done!" << std::endl;
+
+}
+
+
+void AnalyzeBoundaries()
+{
+	// 0: 分析不同多项式阶数影响；
+	// 1：分析不同子区大小影响；
+
+	int mode = 1;
+
+	if (mode == 0)
+		std::cout << "Analyze boundary displacement fields corresponding to different polynomial orders ..." << std::endl;
+	else if (mode == 1)
+		std::cout << "Analyze sinusoidal displacement fields corresponding to different subset sizes ..." << std::endl;
+
+
+	// 参数矩阵
+	imat para;
+
+	if (mode == 0)
+	{
+		const ivec polynomail_order = regspace<ivec>(2, 1, 5);
+		const int subset_size = 29;
+		const int shape_function_order = 2;
+
+		para.zeros(polynomail_order.n_elem, 3);
+		for (int i = 0; i < polynomail_order.n_elem; ++i)
+		{
+			para(i, 0) = polynomail_order(i);
+			para(i, 1) = subset_size;
+			para(i, 2) = shape_function_order;
+		}
+	}
+	else if (mode == 1)
+	{
+		const int polynomail_order = 3;
+		const ivec subset_size = regspace<ivec>(9, 10, 9);
+		const int shape_function_order = 0;
+
+		para.zeros(subset_size.n_elem, 3);
+		for (int i = 0; i < subset_size.n_elem; ++i)
+		{
+			para(i, 0) = polynomail_order;
+			para(i, 1) = subset_size(i);
+			para(i, 2) = shape_function_order;
+		}
+	}
+
+
+	// 相关计算
+	for (int i = 0; i < para.n_rows; ++i)
+	{
+		// 参数
+		const int polynomial_order = para(i, 0);
+		const int subset_size = para(i, 1);
+		const int shape_function_order = para(i, 2);
+
+		AnalyzeBoundary(polynomial_order, subset_size, shape_function_order);
+
+	}
+
+	std::cout << "Job Finished!" << std::endl;
+
 
 }

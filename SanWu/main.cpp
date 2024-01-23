@@ -4,7 +4,8 @@
 int main()
 {
 	// 分析传递函数
-	AnalyzeTransferFunctions();
+	//AnalyzeTransferFunctions();
 
-	//AnalyzeBoundary();
+	// 分析AOI边缘
+	AnalyzeBoundaries();
 }

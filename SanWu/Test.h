@@ -29,3 +29,7 @@ void AnalyzeTransferFunctions();
 
 
 void AnalyzeBoundary();
+
+
+
+void AnalyzeBoundaries();
